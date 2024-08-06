@@ -1,7 +1,7 @@
 export type Coordinates = {
-    lat: number;
-    lng: number;
-    speed: number;
-    radius: number;
+  lat: number | null;
+  lng: number | null;
+  speed: number | null;
+  radius: number | null;
     
   };

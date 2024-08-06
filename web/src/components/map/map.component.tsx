@@ -41,6 +41,7 @@ export const Map: React.FC = () => {
   };
 
   const handleFriendlyMarkClick = (plane: any, event: L.LeafletEvent) => {
+    //@ts-ignore
     const target = event.originalEvent.currentTarget as HTMLElement;
     setSelectedPlane(plane);
     setFriendlyAnchor(target);
@@ -52,6 +53,7 @@ export const Map: React.FC = () => {
   };
 
   const handleMarkerClick = (event: L.LeafletEvent) => {
+    //@ts-ignore
     const target = event.originalEvent.currentTarget as HTMLElement;
     setAnchorEl(target);
   };
@@ -118,7 +120,7 @@ export const Map: React.FC = () => {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
       
-        {coordinates.lat && coordinates.lng && (
+        {coordinates && coordinates.lat !== null && coordinates.lng !== null && (
           <>
             <Marker 
               position={[coordinates.lat, coordinates.lng]}
@@ -140,7 +142,7 @@ export const Map: React.FC = () => {
           setRadius={setRadius}
         />
 
-        {coordinates.lat && coordinates.lng && closestPlane && (
+        {coordinates && coordinates.lat !== null && coordinates.lng !== null && closestPlane && (
           <Marker 
             key={closestPlane.icao24} 
             position={[closestPlane.latitude, closestPlane.longitude]} 

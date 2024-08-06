@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import {useState} from 'react';
 import { Grid } from '@mui/material';
 import { MapLayout } from './Layouts/MapLayout/maplayout.component';
 import { CoordinateButton, SaveOperationButton } from './components/Buttons';

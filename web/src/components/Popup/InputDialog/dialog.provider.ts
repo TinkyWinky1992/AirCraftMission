@@ -3,8 +3,8 @@ import { Coordinates } from "../../../types";
 
 
 type DialogContextType = {
-  coordinates: Coordinates;
-  setCoordinates: React.Dispatch<React.SetStateAction<Coordinates>>;
+  coordinates: Coordinates | null;
+  setCoordinates: React.Dispatch<React.SetStateAction<Coordinates | null>>;
 };
 
 export const DialogContext = createContext<DialogContextType | undefined>(undefined);

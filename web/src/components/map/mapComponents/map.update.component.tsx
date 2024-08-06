@@ -9,7 +9,7 @@ export const MapUpdater: React.FC = () => {
     const map = useMap();
   
     useEffect(() => {
-      if (coordinates.lat && coordinates.lng) {
+      if (coordinates && coordinates.lat !== null && coordinates.lng !== null) {
         map.setView([coordinates.lat, coordinates.lng], 13); 
       }
     }, [coordinates, map]);
