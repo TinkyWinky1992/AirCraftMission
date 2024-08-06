@@ -14,14 +14,14 @@ datasource db {
 }
 
 model EnemyAircraft {
-  id                 Int                  @id @default(autoincrement())
-  latitude           Float
-  longitude          Float
-  radius             Float
-  speed              Float
-  threatening        ThreateningAirCraft
-  threatenedAircraft ThreatenedAircraft[]
-  operations         Operation[]          @relation("EnemyAircraftOperation")
+  id                   Int                 @id @default(autoincrement())
+  latitude             Float
+  longitude            Float
+  radius               Float
+  speed                Float
+  threatening          ThreateningAirCraft
+  threatenedAircraft   ThreatenedAircraft? @relation("EnemyThreatenedAircraft")
+  operations           Operation[]         @relation("EnemyAircraftOperation")
 }
 
 model ThreatenedAircraft {
@@ -29,10 +29,11 @@ model ThreatenedAircraft {
   latitude        Float
   longitude       Float
   speed           Float
-  enemyAircraftId Int
-  enemyAircraft   EnemyAircraft @relation(fields: [enemyAircraftId], references: [id])
+  enemyAircraftId Int           @unique
+  enemyAircraft   EnemyAircraft @relation("EnemyThreatenedAircraft", fields: [enemyAircraftId], references: [id])
   operations      Operation[]   @relation("ThreatenedAircraftOperation")
 }
+
 
 
 model Operation {
@@ -40,9 +41,10 @@ model Operation {
   dateTime               DateTime            @default(now())
   enemyAircraftId        Int
   enemyAircraft          EnemyAircraft       @relation("EnemyAircraftOperation", fields: [enemyAircraftId], references: [id])
-  threatenedAircraftId   Int
-  threatenedAircraft     ThreatenedAircraft  @relation("ThreatenedAircraftOperation", fields: [threatenedAircraftId], references: [id])
+  threatenedAircraftId   Int?                
+  threatenedAircraft     ThreatenedAircraft? @relation("ThreatenedAircraftOperation", fields: [threatenedAircraftId], references: [id])
 }
+
 
 enum ThreateningAirCraft {
   WITH_THREATENING

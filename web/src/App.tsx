@@ -4,9 +4,10 @@ import { MapLayout } from './Layouts/MapLayout/maplayout.component';
 import { CoordinateButton, SaveOperationButton } from './components/Buttons';
 
 import './App.css'
-import { DetailsProvider } from './components';
+import { DetailsProvider, DialogSaveOperation } from './components';
 function App() {
   const [open, setOpen] = useState(true);
+  const [openSave, setOpenSave] = useState(false);
   return (
     <DetailsProvider>
       <Grid 
@@ -32,12 +33,13 @@ function App() {
 
         >
           <Grid item>
-            <SaveOperationButton/>
+            <SaveOperationButton setOpen={setOpenSave}/>
           </Grid>
           <Grid item>
             <CoordinateButton open={open} setOpen={setOpen}/>
           </Grid>
         </Grid>
+        <DialogSaveOperation open={openSave} setOpen={setOpenSave}/>
       </Grid>
     </DetailsProvider>
   );

@@ -1,16 +1,67 @@
 import { Injectable } from '@nestjs/common';
-import { TargetCoordinateDto, FreindlyAircraft } from 'src/Dto';
+import { PrismaService } from '../PrismaService';
+import { TargetCoordinateDto, FriendlyAircraftDto, SaveOperationDto } from 'src/Dto';
 import { calculateDistance, convertTimeToString } from './utils';
+import { Operation, EnemyAircraft, ThreatenedAircraft , Prisma } from '@prisma/client';
+import { EnemyAircraftEntity, OperationEntity } from 'src/Entites';
+import { PrismaClient, ThreateningAirCraft } from '@prisma/client';
 @Injectable()
 export class AppService {
-  constructor() {
+  constructor(private  prisma: PrismaService) {
 
+  }
+
+
+
+  async saveOperation(operation: SaveOperationDto) {
+    // Create enemy aircraft
+    const enemyAircraft = await this.prisma.enemyAircraft.create({
+      data: {
+        latitude: operation.EnemyCoordinates.lat,
+        longitude: operation.EnemyCoordinates.lng,
+        radius: operation.EnemyCoordinates.maxFlightRadius,
+        speed: operation.EnemyCoordinates.speed,
+        threatening: operation.FriendlyAirCraft 
+          ? ThreateningAirCraft.WITH_THREATENING 
+          : ThreateningAirCraft.NON_THREATENING,
+      },
+    });
+  
+    // Initialize threatenedAircraftId as null
+    let threatenedAircraftId: number | null = null;
+  
+    // Create threatened aircraft only if FriendlyAirCraft is present
+    if (operation.FriendlyAirCraft) {
+      const threatenedAircraft = await this.prisma.threatenedAircraft.create({
+        data: {
+          latitude: operation.FriendlyAirCraft.latitude,
+          longitude: operation.FriendlyAirCraft.longitude,
+          speed: operation.FriendlyAirCraft.velocity,
+          enemyAircraftId: enemyAircraft.id,
+        },
+      });
+      threatenedAircraftId = threatenedAircraft.id;
+    }
+  
+    
+    const createdOperation = await this.prisma.operation.create({
+      data: {
+        dateTime: new Date(),
+        enemyAircraftId: enemyAircraft.id,
+        threatenedAircraftId: threatenedAircraftId || null, 
+      },
+    });
+  
+    console.log('Created Operation:', createdOperation);
+  
+    return createdOperation;
   }
 
 
   async getTimer (log: number, lng: number, coordinates: TargetCoordinateDto ) {
     
     if (!coordinates || coordinates.lat === undefined || coordinates.lng === undefined || coordinates.speed === undefined) {
+      
       console.error("Coordinates are not available.");
       return "Coordinates are not available.";
     }
@@ -25,7 +76,7 @@ export class AppService {
     const distance = calculateDistance(currentLat, currentLng, log, lng);
     const timeRemainingSeconds = distance / speedMS;
   
-  
+    
     return convertTimeToString(timeRemainingSeconds);
     
   }
@@ -34,7 +85,7 @@ export class AppService {
     return 'Hello World!';
   }
 
-  async ClosestPlane(aircraft: FreindlyAircraft[], coordinates: TargetCoordinateDto, radius: number): Promise<FreindlyAircraft> {
+  async ClosestPlane(aircraft: FriendlyAircraftDto[], coordinates: TargetCoordinateDto, radius: number): Promise<FriendlyAircraftDto> {
     const { lat: fireLat, lng: fireLng } = coordinates;
   
     if (!fireLat || !fireLng) {

@@ -1,8 +1,11 @@
-export class FreindlyAircraft  {
-    icao24: string;
-    callsign: string;
-    longitude: number;
-    latitude: number;
-    velocity: number;
+
+
+export class FriendlyAircraftDto {
+  
+  icao24: string;
+  callsign: string;
+  latitude: number;
+  longitude: number;
+  velocity: number;
 
 }

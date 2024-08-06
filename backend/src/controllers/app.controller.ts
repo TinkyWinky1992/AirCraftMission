@@ -1,5 +1,5 @@
-import { Controller, Get, Query } from '@nestjs/common';
-import { TargetCoordinateDto, FreindlyAircraft } from 'src/Dto';
+import { Controller, Get, Query, Post, Body} from '@nestjs/common';
+import { TargetCoordinateDto, FriendlyAircraftDto, SaveOperationDto } from 'src/Dto';
 import { AppService } from 'src/service';
 
 @Controller()
@@ -27,11 +27,58 @@ export class AppController {
 
   @Get('nearbyplane')
   getNearPlane(
-    @Query('aircraft')aircraft: FreindlyAircraft[], 
+    @Query('aircraft')aircraft: FriendlyAircraftDto[], 
     @Query('coordinates') coordinates: TargetCoordinateDto, 
-    @Query('radius') radius: number): Promise<FreindlyAircraft>{
+    @Query('radius') radius: number): Promise<FriendlyAircraftDto>{
 
     return this.appService.ClosestPlane(aircraft, coordinates, radius)
   }
+
+  @Post('SaveOperation')
+  SaveOperation(@Body() saveOperationDto: any) {
+    console.log("hi", saveOperationDto);
+
+    const operationDto = new SaveOperationDto();
+    
+    // Handle FriendlyAirCraft
+    if (saveOperationDto.aircraft && saveOperationDto.aircraft.length > 0) {
+      const aircraftData = saveOperationDto.aircraft[0];
+      const friendlyAirCraft = new FriendlyAircraftDto();
+      friendlyAirCraft.icao24 = aircraftData.icao24;
+      friendlyAirCraft.callsign = aircraftData.callsign;
+      friendlyAirCraft.latitude = parseFloat(aircraftData.latitude);
+      friendlyAirCraft.longitude = parseFloat(aircraftData.longitude);
+      friendlyAirCraft.velocity = parseFloat(aircraftData.velocity);
+      operationDto.FriendlyAirCraft = friendlyAirCraft;
+    } else {
+      operationDto.FriendlyAirCraft = null;
+    }
+  
+    
+    if (saveOperationDto.coordinate) {
+      const enemyCoordinates = new TargetCoordinateDto();
+      enemyCoordinates.lat = parseFloat(saveOperationDto.coordinate.lat);
+      enemyCoordinates.lng = parseFloat(saveOperationDto.coordinate.lng);
+      enemyCoordinates.speed = parseFloat(saveOperationDto.coordinate.speed);
+      enemyCoordinates.maxFlightRadius = parseFloat(saveOperationDto.coordinate.radius);
+      operationDto.EnemyCoordinates = enemyCoordinates;
+    } else {
+      operationDto.EnemyCoordinates = null;
+    }
+  
+
+    if (saveOperationDto.dateTime) {
+      operationDto.DateTime = new Date(saveOperationDto.dateTime);
+    } else {
+      throw new Error('DateTime is required');
+    }
+  
+    // Logging for validation
+    console.log('Validation succeeded: ', operationDto);
+  
+    // Save operation
+    return this.appService.saveOperation(operationDto);
+  }
+
 
 }

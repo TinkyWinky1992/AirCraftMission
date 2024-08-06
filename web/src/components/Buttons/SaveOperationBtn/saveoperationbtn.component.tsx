@@ -1,17 +1,20 @@
-import React from 'react';
+import React, {Dispatch, SetStateAction} from 'react';
 import { Grid, Typography } from '@mui/material';
 import { useDetailsContext } from '../../map';
 import './saveoperationbtn.style.css';
+interface SaveOperationButtonProps {
+  setOpen: Dispatch<SetStateAction<boolean>>;
+}
 
-export const SaveOperationButton: React.FC = () => {
-  const { friendlyAircraft, enemyDetails } = useDetailsContext();
+
+export const SaveOperationButton: React.FC<SaveOperationButtonProps> = ({setOpen}) => {
+  const { enemyDetails } = useDetailsContext();
 
   const OnHandleClick = () => {
     if(enemyDetails?.lat == null)
         return;
 
-    console.log("Friendly Aircraft:", friendlyAircraft);
-    console.log("Enemy Details:", enemyDetails);
+    setOpen(true);
   };
 
   return (

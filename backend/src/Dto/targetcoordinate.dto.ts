@@ -1,6 +1,9 @@
-export  class TargetCoordinateDto {
-    readonly lat: number;
-    readonly lng: number;
-    readonly speed: number;
-    readonly maxFlightRadius: number
-}
+
+export class TargetCoordinateDto {
+    
+    lat: number;
+    lng: number;
+    speed: number;
+    maxFlightRadius: number;
+
+  }

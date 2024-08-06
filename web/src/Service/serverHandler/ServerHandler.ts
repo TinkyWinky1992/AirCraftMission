@@ -13,12 +13,13 @@ export const getTimer = async (lat: number, lng: number, coordinate: Coordinates
         radius: coordinate.radius
       }
     });
-
     return response.data; 
   } catch (error) {
     console.error('Error fetching timer:', error);
   }
 };
+
+//nearbyplane
 
 export const getNearPlane = async(aircraft: FreindlyAircraft[], coordinate: Coordinates, radius: number) => {
   try {
@@ -29,13 +30,27 @@ export const getNearPlane = async(aircraft: FreindlyAircraft[], coordinate: Coor
         radius:radius
       }
     });
-
     return response.data; 
   } catch (error) {
     console.error('Error fetching timer:', error);
   }
 }
 
+
+export const postOperation = async (aircraft: FreindlyAircraft[] | null, coordinate: Coordinates, dateTime: Date) => {
+  try {
+    const response = await axios.post('http://localhost:5000/SaveOperation', {
+      aircraft,
+      coordinate,
+      dateTime,
+    });
+
+    console.log('Operation posted successfully:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching timer:', error);
+  }
+};
 
 
 
