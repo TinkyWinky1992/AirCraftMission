@@ -1,0 +1,14 @@
+
+.plane-icon {
+    fill: #0e75fb; 
+    stroke: #0e75fb; 
+  }
+  
+  .plane-icon circle {
+    fill: #607d8b; 
+  }
+  
+  .plane-icon path {
+    fill: #ffffff; 
+  }
+  
