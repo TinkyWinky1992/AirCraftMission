@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { DialogState } from "../../../types";
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -7,10 +8,10 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import { useCoordinateContext } from "./dialog.provider";
 
-export const DialogInputCor: React.FC = () => {
-    const [open, setOpen] = useState(true);
+export const DialogInputCor: React.FC<DialogState> = ({ open, setOpen }) => {
     const [tempCoordinates, setTempCoordinates] = useState({ lat: '', lng: '', speed: '', radius: '' });
     const { setCoordinates } = useCoordinateContext();
+    const [errors, setErrors] = useState({ lat: false, lng: false, speed: false, radius: false });
 
     const handleClose = () => {
         setOpen(false);
@@ -22,24 +23,35 @@ export const DialogInputCor: React.FC = () => {
         const speed = Number(tempCoordinates.speed);
         const radius = Number(tempCoordinates.radius);
 
-        if (isNaN(lat) || isNaN(lng) || isNaN(speed) || isNaN(radius)) {
+        const newErrors = {
+            lat: isNaN(lat) || tempCoordinates.lat === '',
+            lng: isNaN(lng) || tempCoordinates.lng === '',
+            speed: isNaN(speed) || tempCoordinates.speed === '',
+            radius: isNaN(radius) || tempCoordinates.radius === ''
+        };
+
+        setErrors(newErrors);
+
+        const hasError = Object.values(newErrors).some(error => error);
+        if (hasError) {
             console.log("Coordinates or details are not valid numbers");
             return;
         }
-        
+
         setCoordinates({
             lat,
             lng,
             speed,
             radius
         });
-        
+
         handleClose();
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setTempCoordinates(prevState => ({ ...prevState, [name]: value }));
+        setErrors(prevState => ({ ...prevState, [name]: false }));
     };
 
     return (
@@ -54,6 +66,8 @@ export const DialogInputCor: React.FC = () => {
                     variant="outlined"
                     fullWidth
                     margin="normal"
+                    error={errors.lat}
+                    helperText={errors.lat ? "Latitude is required and must be a number" : ""}
                 />
                 <TextField
                     label="Longitude"
@@ -63,6 +77,8 @@ export const DialogInputCor: React.FC = () => {
                     variant="outlined"
                     fullWidth
                     margin="normal"
+                    error={errors.lng}
+                    helperText={errors.lng ? "Longitude is required and must be a number" : ""}
                 />
                 <TextField
                     label="Maximum flight radius"
@@ -72,6 +88,8 @@ export const DialogInputCor: React.FC = () => {
                     variant="outlined"
                     fullWidth
                     margin="normal"
+                    error={errors.radius}
+                    helperText={errors.radius ? "Radius is required and must be a number" : ""}
                 />
                 <TextField
                     label="Flight Speed"
@@ -81,6 +99,8 @@ export const DialogInputCor: React.FC = () => {
                     variant="outlined"
                     fullWidth
                     margin="normal"
+                    error={errors.speed}
+                    helperText={errors.speed ? "Speed is required and must be a number" : ""}
                 />
             </DialogContent>
             <DialogActions>

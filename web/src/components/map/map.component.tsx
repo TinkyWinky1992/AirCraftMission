@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useDetailsContext } from './mapdetials.provider.component';
 import { useCoordinateContext } from '../Popup';
 import { PlaneIcon, TargetPlaneIcon, render } from '../Icon';
 import { TargetPlaneDetails, FriendlyPlaneDetails,   } from '../Popup';
@@ -9,6 +10,7 @@ import { getNearPlane, getTimer } from '../../Service';
 import L from 'leaflet';
 import "leaflet/dist/leaflet.css";
 import { fetchAirCraft } from '../../Service';
+import { Grid } from '@mui/material';
 
 
 const createPlaneIcon = (Component: React.FC<{ sizeRem: number }>, iconSize: number) => {
@@ -20,6 +22,7 @@ const createPlaneIcon = (Component: React.FC<{ sizeRem: number }>, iconSize: num
 };
 
 export const Map: React.FC = () => {
+  const { setFriendlyAircraft, setEnemyDetails } = useDetailsContext();
   const [aircraft, setAircraft] = useState<FreindlyAircraft[]>([]);
   const [closestPlane, setClosestPlane] = useState<FreindlyAircraft | null>(null);
   const { coordinates } = useCoordinateContext();
@@ -71,16 +74,19 @@ export const Map: React.FC = () => {
       }
     };
 
+
     fetchData();
   }, []);
 
   useEffect(() => {
     if (coordinates) {
-      console.log(coordinates)
+      setEnemyDetails(coordinates);
       const fetchNearByPlane = async () => {
         try {
           const plane = await getNearPlane(aircraft, coordinates, radius * 2)
           setClosestPlane(plane);
+          setFriendlyAircraft(plane)
+
         }catch(error){
           console.log(error)
         }
@@ -105,57 +111,62 @@ export const Map: React.FC = () => {
   const openNonTarget = Boolean(friendlyAnchor);
 
   return (
-    <MapContainer center={[31.0461, 34.8516]} zoom={8} style={{ height: "100vh", width: "100vw" }}>
-      <TileLayer
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-      />
-      {coordinates.lat && coordinates.lng && (
-        <>
-          <Marker 
-            position={[coordinates.lat, coordinates.lng]}
-            icon={createPlaneIcon(TargetPlaneIcon, iconSizeRem)}
-            eventHandlers={{
-              click: handleMarkerClick
-            }}
-          />
-          <ZoomAwareCircle position={[coordinates.lat, coordinates.lng]} radius={radius} />
-          <ZoomAwareBlueCircle position={[coordinates.lat, coordinates.lng]} radius={radius * 2} />
-        </>
-      )}
-
-      <TargetPlaneDetails
-        anchorEl={anchorEl}
-        open={openTarget}
-        handleClose={handleClose}
-        isAirCraftAround={isAirCraftAround}
-        setRadius={setRadius}
-      />
-
-      {coordinates.lat && coordinates.lng && closestPlane && (
-        <Marker 
-          key={closestPlane.icao24} 
-          position={[closestPlane.latitude, closestPlane.longitude]} 
-          icon={createPlaneIcon(PlaneIcon, iconSizeRem)}
-          eventHandlers={{
-            click: (event: L.LeafletEvent) => handleFriendlyMarkClick(closestPlane, event)
-          }}
-        >
-          {selectedPlane === closestPlane && (
-            <FriendlyPlaneDetails
-              lng={closestPlane.latitude}
-              log={closestPlane.longitude}
-              TimeRemning={timer}
-              anchorEl={friendlyAnchor}
-              open={openNonTarget}
-              handleClose={handleFriendlyClose}
+    <Grid container sx={{ height: "100vh", width: "100vw" }}>
+      <MapContainer center={[31.0461, 34.8516]} zoom={8} style={{ height: "100vh", width: "100vw" }}>
+        <TileLayer
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        />
+      
+        {coordinates.lat && coordinates.lng && (
+          <>
+            <Marker 
+              position={[coordinates.lat, coordinates.lng]}
+              icon={createPlaneIcon(TargetPlaneIcon, iconSizeRem)}
+              eventHandlers={{
+                click: handleMarkerClick
+              }}
             />
-          )}
-        </Marker>
-      )}
+            <ZoomAwareCircle position={[coordinates.lat, coordinates.lng]} radius={radius} />
+            <ZoomAwareBlueCircle position={[coordinates.lat, coordinates.lng]} radius={radius * 2} />
+          </>
+        )}
 
-      <ZoomHandler onZoomChange={handleZoomChange} />
-      <MapUpdater />
-    </MapContainer>
+        <TargetPlaneDetails
+          anchorEl={anchorEl}
+          open={openTarget}
+          handleClose={handleClose}
+          isAirCraftAround={isAirCraftAround}
+          setRadius={setRadius}
+        />
+
+        {coordinates.lat && coordinates.lng && closestPlane && (
+          <Marker 
+            key={closestPlane.icao24} 
+            position={[closestPlane.latitude, closestPlane.longitude]} 
+            icon={createPlaneIcon(PlaneIcon, iconSizeRem)}
+            eventHandlers={{
+              click: (event: L.LeafletEvent) => handleFriendlyMarkClick(closestPlane, event)
+            }}
+          >
+            {selectedPlane === closestPlane && (
+              <FriendlyPlaneDetails
+                lng={closestPlane.latitude}
+                log={closestPlane.longitude}
+                TimeRemning={timer}
+                anchorEl={friendlyAnchor}
+                open={openNonTarget}
+                handleClose={handleFriendlyClose}
+              />
+            )}
+          </Marker>
+        )}
+
+        <ZoomHandler onZoomChange={handleZoomChange} />
+        <MapUpdater />
+      </MapContainer>
+    </Grid>
+
+    
   );
 };

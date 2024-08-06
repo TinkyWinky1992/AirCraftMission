@@ -2,7 +2,6 @@ import axios from 'axios';
 import { Coordinates, FreindlyAircraft } from '../../types';
 
 export const getTimer = async (lat: number, lng: number, coordinate: Coordinates) => {
-
   try {
     const response = await axios.get('http://localhost:5000/timer', {
       params: {
@@ -14,14 +13,12 @@ export const getTimer = async (lat: number, lng: number, coordinate: Coordinates
         radius: coordinate.radius
       }
     });
-    console.log(response.data);
+
     return response.data; 
   } catch (error) {
     console.error('Error fetching timer:', error);
   }
 };
-
-//nearbyplane
 
 export const getNearPlane = async(aircraft: FreindlyAircraft[], coordinate: Coordinates, radius: number) => {
   try {
@@ -32,7 +29,7 @@ export const getNearPlane = async(aircraft: FreindlyAircraft[], coordinate: Coor
         radius:radius
       }
     });
-    console.log(response.data);
+
     return response.data; 
   } catch (error) {
     console.error('Error fetching timer:', error);

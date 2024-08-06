@@ -1,0 +1,13 @@
+
+
+.layout {
+    position: relative;
+    width: 40rem;
+    height: 40rem;
+    display: flex;
+    justify-content: center; 
+    align-items: center;    
+    overflow: hidden;
+    border-radius: 2rem;
+    border: 5px solid rgba(102, 104, 104, 1);
+  }
