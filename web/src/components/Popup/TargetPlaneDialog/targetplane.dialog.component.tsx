@@ -70,7 +70,6 @@ export const TargetPlaneDetails: React.FC<PlaneProps> = ({ anchorEl, open, handl
       <Typography variant="h6" sx={{ color: 'black' }}>{`Longitude: ${longitude}`}</Typography>
       <Typography variant="h6" sx={{ color: 'black' }}>{`Flight Speed: ${speed}`}</Typography>
       <Typography variant="h6" sx={{ color: 'black' }}>{`Maximum flight radius: ${radius}`}</Typography>
-      <Typography variant="h6" sx={{ color: 'black' }}>{`AirCraft Around: ${isAirCraftAround}`}</Typography>
       <Divider />
 
       <TextField

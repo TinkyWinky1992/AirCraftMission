@@ -82,7 +82,6 @@ export const DrawerNavigation: React.FC<{ open: boolean }> = ({ open }) => {
                 setFriendlyAircraft({
                     ...selectedFriendlyAircraft,
                     velocity: selectedFriendlyAircraft.speed,
-                    // Provide default or placeholder values for required properties
                     icao24:  '',
                     callsign: '',
 
@@ -106,7 +105,7 @@ export const DrawerNavigation: React.FC<{ open: boolean }> = ({ open }) => {
     return (
         <ThemeProvider theme={darkTheme}>
             <Grid container sx={{ minHeight: '100vh' }}>
-                <Box sx={{ width: 500, padding: 2 }} role="presentation">
+                <Box sx={{ width: {lg: 500, xs: 300 }, padding: 2 }} role="presentation">
                     <Divider />
                     {(!Operations || Operations.length == 0) && (
                          <Grid container sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
