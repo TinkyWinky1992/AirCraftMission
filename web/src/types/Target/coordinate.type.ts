@@ -3,5 +3,6 @@ export type Coordinates = {
   lng: number | null;
   speed: number | null;
   radius: number | null;
+ 
     
   };

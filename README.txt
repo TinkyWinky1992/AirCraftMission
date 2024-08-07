@@ -6,3 +6,8 @@ docker exec -it aircraftdetected-postgres-1 psql -U yuval -d AirTrackerDatabase 
 
 
 
+\c postgres
+DROP DATABASE "AirTrackerDatabase";
+
+to deploy again please type: 
+npx prisma migrate deploy (On your backend folder)

@@ -3,7 +3,7 @@ import { useDetailsContext } from './mapdetials.provider.component';
 import { useCoordinateContext } from '../Popup';
 import { PlaneIcon, TargetPlaneIcon, render } from '../Icon';
 import { TargetPlaneDetails, FriendlyPlaneDetails,   } from '../Popup';
-import { MapUpdater, ZoomAwareCircle, ZoomAwareBlueCircle, ZoomHandler} from './mapComponents';
+import { MapUpdater, ZoomAwareCircle, ZoomAwareBlueCircle, ZoomHandler, DirectionLine} from './mapComponents';
 import { MapContainer, TileLayer, Marker } from 'react-leaflet';
 import { FreindlyAircraft } from '../../types';
 import { getNearPlane, getTimer } from '../../Service';
@@ -33,6 +33,7 @@ export const Map: React.FC = () => {
   const [friendlyAnchor, setFriendlyAnchor] = useState<HTMLElement | null>(null);
 
   const [radius, setRadius] = useState<number>(1200);
+  const [outerRadius, setouterRadius] = useState<number>(1200*2);
   const [isAirCraftAround, setIsAirCraftAround] = useState<boolean>(false);
   const [selectedPlane, setSelectedPlane] = useState<any | null>(null);
 
@@ -85,7 +86,7 @@ export const Map: React.FC = () => {
       setEnemyDetails(coordinates);
       const fetchNearByPlane = async () => {
         try {
-          const plane = await getNearPlane(aircraft, coordinates, radius * 2)
+          const plane = await getNearPlane(aircraft, coordinates, outerRadius)
           setClosestPlane(plane);
           setFriendlyAircraft(plane)
 
@@ -130,7 +131,7 @@ export const Map: React.FC = () => {
               }}
             />
             <ZoomAwareCircle position={[coordinates.lat, coordinates.lng]} radius={radius} />
-            <ZoomAwareBlueCircle position={[coordinates.lat, coordinates.lng]} radius={radius * 2} />
+            <ZoomAwareBlueCircle position={[coordinates.lat, coordinates.lng]} radius={outerRadius} />
           </>
         )}
 
@@ -140,6 +141,8 @@ export const Map: React.FC = () => {
           handleClose={handleClose}
           isAirCraftAround={isAirCraftAround}
           setRadius={setRadius}
+          setOuterRadius={setouterRadius}
+          impactRadius={radius}
         />
 
         {coordinates && coordinates.lat !== null && coordinates.lng !== null && closestPlane && (
@@ -163,7 +166,10 @@ export const Map: React.FC = () => {
             )}
           </Marker>
         )}
-
+        { closestPlane &&  (
+          <DirectionLine FriendlyLat={closestPlane?.latitude} FriendlyLon={closestPlane?.longitude}/>
+        )}
+        
         <ZoomHandler onZoomChange={handleZoomChange} />
         <MapUpdater />
       </MapContainer>

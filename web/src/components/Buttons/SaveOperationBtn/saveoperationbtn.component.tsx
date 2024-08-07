@@ -2,17 +2,23 @@ import React, {Dispatch, SetStateAction} from 'react';
 import { Grid, Typography } from '@mui/material';
 import { useDetailsContext } from '../../map';
 import './saveoperationbtn.style.css';
+
 interface SaveOperationButtonProps {
   setOpen: Dispatch<SetStateAction<boolean>>;
+  setIsCoordination: Dispatch<SetStateAction<boolean>>;
 }
 
 
-export const SaveOperationButton: React.FC<SaveOperationButtonProps> = ({setOpen}) => {
+export const SaveOperationButton: React.FC<SaveOperationButtonProps> = ({setOpen, setIsCoordination }) => {
   const { enemyDetails } = useDetailsContext();
 
   const OnHandleClick = () => {
     if(enemyDetails?.lat == null)
-        return;
+    {
+      setIsCoordination(true)
+      return;
+    }
+        
 
     setOpen(true);
   };

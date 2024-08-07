@@ -57,6 +57,14 @@ export class AppService {
     return createdOperation;
   }
 
+  async getAllData() {
+    
+      const ThreatenedAirCrafts = await this.prisma.threatenedAircraft.findMany()
+      const EnemyAirCrafts = await this.prisma.enemyAircraft.findMany()
+      const Operations = await this.prisma.operation.findMany()
+      return {ThreatenedAirCrafts, EnemyAirCrafts , Operations}
+  }
+
 
   async getTimer (log: number, lng: number, coordinates: TargetCoordinateDto ) {
     

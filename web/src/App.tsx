@@ -1,49 +1,75 @@
-import {useState} from 'react';
-import { Grid } from '@mui/material';
+import { useState, useEffect } from 'react';
+import { Grid, Typography } from '@mui/material';
 import { MapLayout } from './Layouts/MapLayout/maplayout.component';
-import { CoordinateButton, SaveOperationButton } from './components/Buttons';
+import { CoordinateButton, SaveOperationButton, DetailsProvider, DialogSaveOperation, DataNaivgation } from './components';
+import { CSSTransition } from "react-transition-group";
+import './App.css';
 
-import './App.css'
-import { DetailsProvider, DialogSaveOperation } from './components';
 function App() {
   const [open, setOpen] = useState(true);
   const [openSave, setOpenSave] = useState(false);
-  return (
-    <DetailsProvider>
-      <Grid 
-        container 
-        direction="column" 
-        alignItems="center"  
-        justifyContent="center"  
-        sx={{ margin: "10px", height: "100vh" ,}}  
-        spacing={2}  
-      >
-        <Grid item>
-          <MapLayout open={open} setOpen={setOpen}/>
-        </Grid>
+  const [isCoordination, setIsCoordination] = useState(false);
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsCoordination(false);
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, [isCoordination]);
+
+  return (
+    <Grid container  sx={{ height: '100vh'}}>
+      <Grid item>
+        <DataNaivgation />
+      </Grid>
+      <DetailsProvider>
         <Grid 
           container 
-          direction="row" 
-          spacing={5}  
+          direction="column" 
           alignItems="center"  
-          justifyContent="center" 
-          
-          sx={{ marginTop: "1rem" , display: "flex"}}  
-
+          justifyContent="center"  
+          sx={{ margin: "10px", height: "calc(100% - 64px)", position: 'relative' }}  
+          spacing={1}
         >
           <Grid item>
-            <SaveOperationButton setOpen={setOpenSave}/>
+            <MapLayout open={open} setOpen={setOpen}/>
           </Grid>
-          <Grid item>
-            <CoordinateButton open={open} setOpen={setOpen}/>
+
+          <Grid 
+            container 
+            direction="row" 
+            spacing={5}  
+            alignItems="center"  
+            justifyContent="center" 
+            sx={{ marginTop: "1rem", display: "flex", padding: "0.5rem" }}  
+          >
+            <Grid item>
+              <SaveOperationButton setOpen={setOpenSave} setIsCoordination={setIsCoordination}/>
+            </Grid>
+            <Grid item>
+              <CoordinateButton open={open} setOpen={setOpen}/>
+            </Grid>
           </Grid>
+          <DialogSaveOperation open={openSave} setOpen={setOpenSave}/>
+
+          {/* Adjust position and ensure it does not overlap with other elements */}
+          <CSSTransition
+            in={isCoordination}
+            timeout={500}
+            classNames="fade"
+            unmountOnExit
+          >
+            <Grid item xs={12} sx={{ position: 'absolute', bottom: 10, width: '100%', textAlign: 'center', padding: '0 10px' }}>
+              <Typography variant="h6" sx={{ color: 'red' }} gutterBottom>
+                You didn't submit any coordination of your Target
+              </Typography>
+            </Grid>
+          </CSSTransition>
         </Grid>
-        <DialogSaveOperation open={openSave} setOpen={setOpenSave}/>
-      </Grid>
-    </DetailsProvider>
+      </DetailsProvider>
+    </Grid>
   );
-  
 }
 
 export default App;

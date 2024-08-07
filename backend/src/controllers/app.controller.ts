@@ -40,7 +40,7 @@ export class AppController {
 
     const operationDto = new SaveOperationDto();
     
-    // Handle FriendlyAirCraft
+
     if (saveOperationDto.aircraft && saveOperationDto.aircraft.length > 0) {
       const aircraftData = saveOperationDto.aircraft[0];
       const friendlyAirCraft = new FriendlyAircraftDto();
@@ -73,12 +73,12 @@ export class AppController {
       throw new Error('DateTime is required');
     }
   
-    // Logging for validation
-    console.log('Validation succeeded: ', operationDto);
-  
-    // Save operation
     return this.appService.saveOperation(operationDto);
   }
 
+  @Get('AllOperations')
+  getOperations(){
+    return this.appService.getAllData()
+  }
 
 }

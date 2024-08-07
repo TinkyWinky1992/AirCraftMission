@@ -10,17 +10,29 @@ type PlaneProps = {
   handleClose: () => void;
   isAirCraftAround: boolean;
   setRadius: Dispatch<React.SetStateAction<number>>;
+  setOuterRadius: Dispatch<React.SetStateAction<number>>;
+  impactRadius: number
 };
 
-export const TargetPlaneDetails: React.FC<PlaneProps> = ({ anchorEl, open, handleClose, isAirCraftAround, setRadius }) => {
+export const TargetPlaneDetails: React.FC<PlaneProps> = ({ anchorEl, open, handleClose, isAirCraftAround, setRadius, setOuterRadius, impactRadius}) => {
   const { coordinates } = useCoordinateContext();
+
+  const handleImpactRadiusChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    const numericValue = Number(value);
+
+    if (!isNaN(numericValue) && numericValue >= 0) {
+      setRadius(numericValue);
+    }
+  };
+
 
   const handleRadiusChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     const numericValue = Number(value);
 
     if (!isNaN(numericValue) && numericValue >= 0) {
-      setRadius(numericValue);
+      setOuterRadius(numericValue);
     }
   };
 
@@ -63,14 +75,24 @@ export const TargetPlaneDetails: React.FC<PlaneProps> = ({ anchorEl, open, handl
       <Divider />
 
       <TextField
-        label="Change Area Radius"
+        label="Change Radius of impact"
+        name="speed"
+        variant="outlined"
+        fullWidth
+        margin="normal"
+        onChange={handleImpactRadiusChange}
+        type="number"
+      />
+
+      <TextField
+        label="Change Radius of  outer Radius"
         name="speed"
         variant="outlined"
         fullWidth
         margin="normal"
         onChange={handleRadiusChange}
         type="number"
-      />
+      />  
     </Popover>
   );
 };
