@@ -39,11 +39,12 @@ model ThreatenedAircraft {
 model Operation {
   id                     Int                 @id @default(autoincrement())
   dateTime               DateTime            @default(now())
-  enemyAircraftId        Int
-  enemyAircraft          EnemyAircraft       @relation("EnemyAircraftOperation", fields: [enemyAircraftId], references: [id])
+  enemyAircraftId        Int?
+  enemyAircraft          EnemyAircraft?       @relation("EnemyAircraftOperation", fields: [enemyAircraftId], references: [id], onDelete: Cascade)
   threatenedAircraftId   Int?                
   threatenedAircraft     ThreatenedAircraft? @relation("ThreatenedAircraftOperation", fields: [threatenedAircraftId], references: [id])
 }
+
 
 
 enum ThreateningAirCraft {

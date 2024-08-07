@@ -1,4 +1,4 @@
-import { Controller, Get, Query, Post, Body} from '@nestjs/common';
+import { Controller, Get, Query, Post, Body, Delete} from '@nestjs/common';
 import { TargetCoordinateDto, FriendlyAircraftDto, SaveOperationDto } from 'src/Dto';
 import { AppService } from 'src/service';
 
@@ -79,6 +79,11 @@ export class AppController {
   @Get('AllOperations')
   getOperations(){
     return this.appService.getAllData()
+  }
+
+  @Delete('delete')
+  async deleteOperationsDetails(@Query('ids') id:number){
+    this.appService.deleteOperations(id);
   }
 
 }

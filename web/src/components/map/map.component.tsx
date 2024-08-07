@@ -32,8 +32,8 @@ export const Map: React.FC = () => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [friendlyAnchor, setFriendlyAnchor] = useState<HTMLElement | null>(null);
 
-  const [radius, setRadius] = useState<number>(1200);
-  const [outerRadius, setouterRadius] = useState<number>(1200*2);
+  const [radius, setRadius] = useState<number>(500);
+  const [outerRadius, setouterRadius] = useState<number>(1800);
   const [isAirCraftAround, setIsAirCraftAround] = useState<boolean>(false);
   const [selectedPlane, setSelectedPlane] = useState<any | null>(null);
 
@@ -97,7 +97,7 @@ export const Map: React.FC = () => {
       }
       fetchNearByPlane()
     }
-  }, [aircraft, coordinates, radius, zoom]);
+  }, [aircraft, coordinates, outerRadius, zoom]);
 
   useEffect(() => {
     const fetchTimer = async () => {

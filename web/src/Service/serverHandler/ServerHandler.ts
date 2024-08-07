@@ -65,3 +65,22 @@ export const getAllOperations = async() =>{
 
 
 
+  
+export const DeleteAllOperation = async(id: number) =>{
+  try{
+    console.log(typeof(id))
+    const response = await axios.delete('http://localhost:5000/delete', {
+      params: {
+        ids:id
+      }
+
+    });
+    console.log(response)
+
+  }catch(error){
+    console.error('Error fetching timer:', error);
+  }
+}
+
+
+

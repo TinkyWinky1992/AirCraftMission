@@ -58,7 +58,7 @@ export class AppService {
   }
 
   async getAllData() {
-    
+
       const ThreatenedAirCrafts = await this.prisma.threatenedAircraft.findMany()
       const EnemyAirCrafts = await this.prisma.enemyAircraft.findMany()
       const Operations = await this.prisma.operation.findMany()
@@ -118,6 +118,41 @@ export class AppService {
     return closestPlane.plane;
   };
 
+
+  async deleteOperations(id: number): Promise<void> {
+    const idAsNumber = +id;
+    console.log(idAsNumber)
+    console.log(typeof(idAsNumber))
+    const operation = await this.prisma.operation.findUnique({
+      where: { id: idAsNumber },
+    });
+  
+    if (operation) {
+      
+      if (operation.threatenedAircraftId) {
+        await this.prisma.threatenedAircraft.delete({
+          where: { id: operation.threatenedAircraftId },
+        });
+      }
+  
+      // Ensure the EnemyAircraft is not being referenced by any other Operations
+      if (operation.enemyAircraftId) {
+        const relatedOperations = await this.prisma.operation.findMany({
+          where: { enemyAircraftId: operation.enemyAircraftId },
+        });
+  
+        if (relatedOperations.length === 1) { // Only the current operation is referencing this EnemyAircraft
+          await this.prisma.enemyAircraft.delete({
+            where: { id: operation.enemyAircraftId }
+          });
+        }
+      }
+  
+    } else {
+      console.warn(`Operation with ID ${id} not found`);
+    }
+  }
 }
+  
 
 

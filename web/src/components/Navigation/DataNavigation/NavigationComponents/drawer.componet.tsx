@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
-import { Grid, Typography } from '@mui/material';
+import { Grid, Typography, Button } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { getAllOperations } from "../../../../Service";
+import ClearIcon from '@mui/icons-material/Clear';
+import { getAllOperations, DeleteAllOperation } from "../../../../Service";
 import { FriendlyAircraftDto, TargetCoordinateDto, OperationDto } from '../../../../Dto';
 
 interface DataResponse {
@@ -17,6 +18,7 @@ export const DrawerNavigation: React.FC<{ open: boolean }> = ({ open }) => {
     const [FriendlyAircraft, setFriendlyAircraft] = useState<FriendlyAircraftDto[]>([]);
     const [EnemyAirCrafts, setEnemyAirCrafts] = useState<TargetCoordinateDto[]>([]);
     const [Operations, setOperations] = useState<OperationDto[]>([]);
+    const [selectedOperation, setSelectedOperation] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -24,7 +26,7 @@ export const DrawerNavigation: React.FC<{ open: boolean }> = ({ open }) => {
             setData(resp);
         };
         fetchData();
-    }, [open]);
+    }, [open, selectedOperation]);
 
     useEffect(() => {
         if (data) {
@@ -51,7 +53,6 @@ export const DrawerNavigation: React.FC<{ open: boolean }> = ({ open }) => {
         return "Not detected";
     };
 
-    
     const getEnemyAircraftForOpertaion = (operationId: number): TargetCoordinateDto[] | string => {
         if (EnemyAirCrafts) {
             const aircrafts = EnemyAirCrafts.filter(aircraft => aircraft.id === operationId);
@@ -60,11 +61,28 @@ export const DrawerNavigation: React.FC<{ open: boolean }> = ({ open }) => {
         return "Not detected";
     };
 
+    const clickhandleOperation = async (operationId: number) => {
+        // Implement the logic for marking the operation here
+        console.log(`Marked operation with ID: ${operationId}`);
+        
+        await DeleteAllOperation(operationId);
+        setSelectedOperation(true)
+    };
+
+
     return (
         <ThemeProvider theme={darkTheme}>
             <Grid container sx={{ minHeight: '100vh' }}>
                 <Box sx={{ width: 500, padding: 2 }} role="presentation">
                     <Divider />
+                    {(!Operations || Operations.length == 0) && (
+                         <Grid container sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <Grid item>
+                                <Typography variant="h6">Data Not Exist</Typography>
+                            </Grid>
+                        </Grid>   
+                    )}
+                    
                     {Operations.map(operation => (
                         <Box key={operation.id} sx={{ marginBottom: 2 }}>
                             <Divider />
@@ -86,7 +104,7 @@ export const DrawerNavigation: React.FC<{ open: boolean }> = ({ open }) => {
                                             <Typography variant="body2">ID: {aircraft.id}</Typography>
                                             <Typography variant="body2">Latitude: {aircraft.latitude}</Typography>
                                             <Typography variant="body2">Longitude: {aircraft.longitude}</Typography>
-                                            <Typography variant="body2">Speed: {aircraft.speed}</Typography>
+                                            <Typography variant="body2">Speed: {aircraft.speed}km/h</Typography>
                                             <Typography variant="body2">Threatening: {aircraft.threatening}</Typography>
                                         </Box>
                                     ));
@@ -108,6 +126,13 @@ export const DrawerNavigation: React.FC<{ open: boolean }> = ({ open }) => {
                                         </Box>
                                     ));
                                 })()}
+                                <Button
+                                    color="error"
+                                    onClick={() => clickhandleOperation(operation.id)}
+                                    sx={{ marginTop: 2 }}
+                                >
+                                    <ClearIcon />
+                                </Button>
                             </Box>
                         </Box>
                     ))}

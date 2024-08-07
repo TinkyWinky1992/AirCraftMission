@@ -12,7 +12,8 @@ export class AppModule {
     consumer.apply(LoggerMiddleware).forRoutes('');
     consumer.apply().forRoutes('');
     consumer.apply().forRoutes('/timer');
-    consumer.apply().forRoutes('/AllOperations')
+    consumer.apply().forRoutes('/AllOperations');
+    consumer.apply().forRoutes('/delete');
 
   }
 }
