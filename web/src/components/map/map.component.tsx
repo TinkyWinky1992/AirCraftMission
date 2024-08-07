@@ -22,10 +22,10 @@ const createPlaneIcon = (Component: React.FC<{ sizeRem: number }>, iconSize: num
 };
 
 export const Map: React.FC = () => {
-  const { setFriendlyAircraft, setEnemyDetails } = useDetailsContext();
+  const { setFriendlyAircraft, setEnemyDetails, enemyDetails, friendlyAircraft } = useDetailsContext();
   const [aircraft, setAircraft] = useState<FreindlyAircraft[]>([]);
   const [closestPlane, setClosestPlane] = useState<FreindlyAircraft | null>(null);
-  const { coordinates } = useCoordinateContext();
+  const { coordinates, setCoordinates } = useCoordinateContext();
   const [zoom, setZoom] = useState<number>(8);
   const [timer, setTimer] = useState<string>('');
   const iconSizeRem = 1 + (zoom - 8) * 0.2;
@@ -110,12 +110,26 @@ export const Map: React.FC = () => {
     fetchTimer();
   }, [closestPlane, coordinates]);
 
+  useEffect(() => {
+    if(enemyDetails) {
+      setCoordinates(enemyDetails)
+    }
+    if(friendlyAircraft) {
+      setClosestPlane(friendlyAircraft)
+    }
+    else
+      setClosestPlane(null)
+  },[enemyDetails, friendlyAircraft])
+
   const openTarget = Boolean(anchorEl);
   const openNonTarget = Boolean(friendlyAnchor);
 
   return (
     <Grid container sx={{ height: "100vh", width: "100vw" }}>
-      <MapContainer center={[31.0461, 34.8516]} zoom={8} style={{ height: "100vh", width: "100vw" }}>
+      <MapContainer 
+      center={[31.0461, 34.8516]} 
+      zoom={8}  
+      style={{ height: "100vh", width: "100vw" }}>
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

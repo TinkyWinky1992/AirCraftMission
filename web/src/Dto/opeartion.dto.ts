@@ -1,7 +1,7 @@
 export type OperationDto = {
     id: number
     dateTime: Date;
-    enemyAirCraftId: number;
+    enemyAircraftId: number;
     threatenedAircraftId: number;
 
 }

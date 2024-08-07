@@ -14,6 +14,7 @@ export class AppModule {
     consumer.apply().forRoutes('/timer');
     consumer.apply().forRoutes('/AllOperations');
     consumer.apply().forRoutes('/delete');
+    consumer.apply().forRoutes('/getLine');
 
   }
 }

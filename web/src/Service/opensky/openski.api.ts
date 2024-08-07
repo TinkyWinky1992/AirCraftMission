@@ -13,6 +13,7 @@ type Aircraft = {
 
   export const fetchAirCraft = async (): Promise<Aircraft[]> => {
     try {
+
       const aircraftData: Aircraft[] = [
         { icao24: '367c8c6c', callsign: '896604', latitude: 30.337, longitude: 39.835, velocity: 114 },
         { icao24: '367ca1d0', callsign: '742838', latitude: 30.015, longitude: 35.327, velocity: 194 },
@@ -44,27 +45,31 @@ type Aircraft = {
 
 
   
-  /*    const response = await axios.get('https://flight-radar1.p.rapidapi.com/flights/list-in-boundary', {
-      params: {
-        bl_lat: 29.5,  // Bottom-left latitude
-        bl_lng: 34.0,  // Bottom-left longitude
-        tr_lat: 33.5,  // Top-right latitude
-        tr_lng: 40.5,  // Top-right longitude
-        limit: 200     // Number of results to return
-      },
-      headers: {
-        'x-rapidapi-host': 'flight-radar1.p.rapidapi.com',
-        'x-rapidapi-key': '5345082c84msh650de8667ef66b8p16ea8cjsn2fc7e52667ac'
-      }
-    });
-    
-    // Adjust the response parsing based on the actual structure
-    return response.data.aircraft.map((state: any) => ({
-      icao24: state[0],
-      callsign: state[1],
-      latitude: state[2],
-      longitude: state[3],
-      velocity: state[4],
-      altitude: state[5]
-    }));
+  /* 
+
+      const response = await axios.get('https://flight-radar1.p.rapidapi.com/flights/list-in-boundary', {
+        params: {
+          bl_lat: 29.5,  // Bottom-left latitude
+          bl_lng: 34.0,  // Bottom-left longitude
+          tr_lat: 33.5,  // Top-right latitude
+          tr_lng: 40.5,  // Top-right longitude
+          limit: 200     // Number of results to return
+        },
+        headers: {
+          'x-rapidapi-host': 'flight-radar1.p.rapidapi.com',
+          'x-rapidapi-key': '5345082c84msh650de8667ef66b8p16ea8cjsn2fc7e52667ac'
+        }
+      });
+      
+      // Adjust the response parsing based on the actual structure
+      return response.data.aircraft.map((state: any) => ({
+        icao24: state[0],
+        callsign: state[1],
+        latitude: state[2],
+        longitude: state[3],
+        velocity: state[4],
+        altitude: state[5]
+      }));
+
+
     */

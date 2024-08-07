@@ -4,9 +4,10 @@ import Divider from '@mui/material/Divider';
 import { Grid, Typography, Button } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import ClearIcon from '@mui/icons-material/Clear';
+import MapIcon from '@mui/icons-material/Map';
 import { getAllOperations, DeleteAllOperation } from "../../../../Service";
 import { FriendlyAircraftDto, TargetCoordinateDto, OperationDto } from '../../../../Dto';
-
+import { useDetailsContext } from "../../../map";
 interface DataResponse {
     ThreatenedAirCrafts: FriendlyAircraftDto[];
     EnemyAirCrafts: TargetCoordinateDto[];
@@ -15,25 +16,29 @@ interface DataResponse {
 
 export const DrawerNavigation: React.FC<{ open: boolean }> = ({ open }) => {
     const [data, setData] = useState<DataResponse | null>(null);
-    const [FriendlyAircraft, setFriendlyAircraft] = useState<FriendlyAircraftDto[]>([]);
+    const [FriendlyAircraft, setFriendlyAircraftcurret] = useState<FriendlyAircraftDto[]>([]);
     const [EnemyAirCrafts, setEnemyAirCrafts] = useState<TargetCoordinateDto[]>([]);
     const [Operations, setOperations] = useState<OperationDto[]>([]);
     const [selectedOperation, setSelectedOperation] = useState(false);
+    const {setEnemyDetails, setFriendlyAircraft} = useDetailsContext()
 
     useEffect(() => {
         const fetchData = async () => {
             const resp = await getAllOperations();
+            
             setData(resp);
+            setSelectedOperation(false)
         };
         fetchData();
-    }, [open, selectedOperation]);
+    }, [open,selectedOperation]);
 
     useEffect(() => {
         if (data) {
-            setFriendlyAircraft(data.ThreatenedAirCrafts);
+            setFriendlyAircraftcurret(data.ThreatenedAirCrafts);
             setEnemyAirCrafts(data.EnemyAirCrafts);
             setOperations(data.Operations);
         }
+        
     }, [data]);
 
     const darkTheme = createTheme({
@@ -45,12 +50,9 @@ export const DrawerNavigation: React.FC<{ open: boolean }> = ({ open }) => {
         },
     });
 
-    const getFriendlyAircraftForOperation = (operationId: number): FriendlyAircraftDto[] | string => {
-        if (FriendlyAircraft) {
-            const aircrafts = FriendlyAircraft.filter(aircraft => aircraft.id === operationId);
-            return aircrafts.length > 0 ? aircrafts : "Not detected";
-        }
-        return "Not detected";
+    const getFriendlyAircraftForOperation = (operation: OperationDto): FriendlyAircraftDto | string => {
+        const aircraft = FriendlyAircraft.find(aircraft => aircraft.id === operation.threatenedAircraftId);
+        return aircraft ? aircraft : "Not detected";
     };
 
     const getEnemyAircraftForOpertaion = (operationId: number): TargetCoordinateDto[] | string => {
@@ -62,12 +64,43 @@ export const DrawerNavigation: React.FC<{ open: boolean }> = ({ open }) => {
     };
 
     const clickhandleOperation = async (operationId: number) => {
-        // Implement the logic for marking the operation here
         console.log(`Marked operation with ID: ${operationId}`);
         
         await DeleteAllOperation(operationId);
         setSelectedOperation(true)
+        
     };
+    const handleChangeOperation  = (operationId: number) => {
+        const selectedOperation = Operations.find(operation => operation.id === operationId);
+
+        if (selectedOperation) {
+            
+           const selectedFriendlyAircraft = FriendlyAircraft.find(aircraft => aircraft.id === selectedOperation.threatenedAircraftId);
+           const selectedTargetAircraft = EnemyAirCrafts.find(target => target.id === selectedOperation.enemyAircraftId);
+            
+            if(selectedFriendlyAircraft)
+                setFriendlyAircraft({
+                    ...selectedFriendlyAircraft,
+                    velocity: selectedFriendlyAircraft.speed,
+                    // Provide default or placeholder values for required properties
+                    icao24:  '',
+                    callsign: '',
+
+                });
+
+            if (selectedTargetAircraft) {
+                    setEnemyDetails({
+                        ...selectedTargetAircraft,
+                        lat: selectedTargetAircraft.latitude,
+                        lng: selectedTargetAircraft.longitude,
+                        radius: selectedTargetAircraft.radius,
+                        speed: selectedTargetAircraft.speed,
+                    });
+            }
+      
+
+         }
+    }
 
 
     return (
@@ -91,11 +124,12 @@ export const DrawerNavigation: React.FC<{ open: boolean }> = ({ open }) => {
                                     Operation {operation.id}: {new Date(operation.dateTime).toLocaleString()}
                                 </Typography>
                                 <Typography variant="body1">
-                                    <strong>Enemy Aircraft:</strong>
+                                    <Typography>Enemy Aircraft:</Typography>
                                 </Typography>
                                 
                                 {(() => {
                                     const enemyAircraft = getEnemyAircraftForOpertaion(operation.id);
+                                    
                                     if (typeof enemyAircraft === "string") {
                                         return <Typography variant="body2">{enemyAircraft}</Typography>;
                                     }
@@ -110,21 +144,22 @@ export const DrawerNavigation: React.FC<{ open: boolean }> = ({ open }) => {
                                     ));
                                 })()}
                                 <Typography variant="body1">
-                                    <strong>Friendly Aircraft:</strong>
+                                    <Typography>Friendly Aircraft:</Typography>
                                 </Typography>
                                 {(() => {
-                                    const friendlyAircrafts = getFriendlyAircraftForOperation(operation.id);
-                                    if (typeof friendlyAircrafts === "string") {
-                                        return <Typography variant="body2">{friendlyAircrafts}</Typography>;
+                                    const friendlyAircraft = getFriendlyAircraftForOperation(operation);
+                                  
+                                    if (typeof friendlyAircraft === "string") {
+                                        return <Typography variant="body2">{friendlyAircraft}</Typography>;
                                     }
-                                    return friendlyAircrafts.map(aircraft => (
-                                        <Box key={aircraft.id} sx={{ padding: 1 }}>
-                                            <Typography variant="body2">ID: {aircraft.id}</Typography>
-                                            <Typography variant="body2">Latitude: {aircraft.latitude}</Typography>
-                                            <Typography variant="body2">Longitude: {aircraft.longitude}</Typography>
-                                            <Typography variant="body2">Speed: {aircraft.speed}</Typography>
+                                    return (
+                                        <Box sx={{ padding: 1 }}>
+                                            <Typography variant="body2">ID: {friendlyAircraft.id}</Typography>
+                                            <Typography variant="body2">Latitude: {friendlyAircraft.latitude}</Typography>
+                                            <Typography variant="body2">Longitude: {friendlyAircraft.longitude}</Typography>
+                                            <Typography variant="body2">Speed: {friendlyAircraft.speed}</Typography>
                                         </Box>
-                                    ));
+                                    );
                                 })()}
                                 <Button
                                     color="error"
@@ -132,6 +167,13 @@ export const DrawerNavigation: React.FC<{ open: boolean }> = ({ open }) => {
                                     sx={{ marginTop: 2 }}
                                 >
                                     <ClearIcon />
+                                </Button>
+                                <Button
+                                    color="info"
+                                    onClick={() => handleChangeOperation(operation.id)}
+                                    sx={{ marginTop: 2 }}
+                                >
+                                    <MapIcon />
                                 </Button>
                             </Box>
                         </Box>

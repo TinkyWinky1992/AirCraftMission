@@ -34,7 +34,7 @@ export const DataNaivgation: React.FC = () => {
                     onClose={toggleDrawerMenu(false) }
                     >
                     <DrawerNavigation open={openMenu}  />
-                    </Drawer>
+            </Drawer>
         </ThemeProvider>
         </Stack>
     );

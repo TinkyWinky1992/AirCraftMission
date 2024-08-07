@@ -19,7 +19,7 @@ export const getTimer = async (lat: number, lng: number, coordinate: Coordinates
   }
 };
 
-//nearbyplane
+
 
 export const getNearPlane = async(aircraft: FreindlyAircraft[], coordinate: Coordinates, radius: number) => {
   try {
@@ -45,7 +45,6 @@ export const postOperation = async (aircraft: FreindlyAircraft[] | null, coordin
       dateTime,
     });
 
-    console.log('Operation posted successfully:', response.data);
     return response.data;
   } catch (error) {
     console.error('Error fetching timer:', error);
@@ -64,19 +63,33 @@ export const getAllOperations = async() =>{
 }
 
 
+export const getLineCoordinate = async(corr:Coordinates, lat:number, lng:number ) => {
+  try{
+    const response = await axios.get('http://localhost:5000/getLine', {
+      params:{
+        coordinate: corr,
+        endLat: lat,
+        endLng: lng,
+      }
+    });
 
+    return response.data
+  }catch(error){
+    console.error('Error fetching timer:', error);
+  }
+
+}
   
 export const DeleteAllOperation = async(id: number) =>{
   try{
-    console.log(typeof(id))
     const response = await axios.delete('http://localhost:5000/delete', {
       params: {
         ids:id
       }
 
     });
-    console.log(response)
-
+    
+    return response
   }catch(error){
     console.error('Error fetching timer:', error);
   }

@@ -20,19 +20,19 @@ function App() {
 
   return (
     <Grid container  sx={{ height: '100vh'}}>
-      <Grid item>
-        <DataNaivgation />
-      </Grid>
       <DetailsProvider>
+        <Grid item>
+          <DataNaivgation />
+        </Grid>
         <Grid 
           container 
           direction="column" 
           alignItems="center"  
           justifyContent="center"  
-          sx={{ margin: "10px", height: "calc(100% - 64px)", position: 'relative' }}  
+          sx={{ margin: "10px", position: 'relative', padding: "2rem"}}  
           spacing={1}
         >
-          <Grid item>
+          <Grid item   >
             <MapLayout open={open} setOpen={setOpen}/>
           </Grid>
 

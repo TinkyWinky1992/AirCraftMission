@@ -6,9 +6,18 @@ import { AppService } from 'src/service';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  @Get('getLine')
+  async getLine(
+    @Query('coordinate') coordinate:any, 
+    @Query('endLat')endLat: number, 
+    @Query('endLng')endLng:number) {
+      const targetCoordinate: TargetCoordinateDto = {
+        lat: coordinate.lat,
+        lng: coordinate.lng,
+        maxFlightRadius: coordinate.radius,
+        speed: coordinate.speed,
+    };
+      return this.appService.getlineCoordinates(targetCoordinate, endLat, endLng);
   }
 
 
@@ -85,5 +94,8 @@ export class AppController {
   async deleteOperationsDetails(@Query('ids') id:number){
     this.appService.deleteOperations(id);
   }
+
+  
+
 
 }

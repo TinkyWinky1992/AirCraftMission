@@ -9,7 +9,10 @@ export const MapLayout: React.FC<DialogState> = ({ open, setOpen }) => {
 
   return (
     <Grid container>
-      <Grid item className='layout'>
+      <Grid item className='layout' sx={{ 
+        width: {lg:"40rem", sm: "20rem", xs:"20rem" },
+        height: {lg:"32rem", sm: "20rem", xs:"20rem"}
+      }}>
         <DialogContext.Provider value={{ coordinates, setCoordinates }}>
           <DialogInputCor open={open} setOpen={setOpen} />
           <Map />

@@ -11,3 +11,6 @@ DROP DATABASE "AirTrackerDatabase";
 
 to deploy again please type: 
 npx prisma migrate deploy (On your backend folder)
+
+npm i 
+npm install @types/leaflet

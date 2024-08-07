@@ -1,10 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../PrismaService';
 import { TargetCoordinateDto, FriendlyAircraftDto, SaveOperationDto } from 'src/Dto';
-import { calculateDistance, convertTimeToString } from './utils';
-import { Operation, EnemyAircraft, ThreatenedAircraft , Prisma } from '@prisma/client';
-import { EnemyAircraftEntity, OperationEntity } from 'src/Entites';
-import { PrismaClient, ThreateningAirCraft } from '@prisma/client';
+import { calculateDistance, convertTimeToString, calculateLine } from './utils';
+import {  ThreateningAirCraft } from '@prisma/client';
 @Injectable()
 export class AppService {
   constructor(private  prisma: PrismaService) {
@@ -14,7 +12,7 @@ export class AppService {
 
 
   async saveOperation(operation: SaveOperationDto) {
-    // Create enemy aircraft
+    
     const enemyAircraft = await this.prisma.enemyAircraft.create({
       data: {
         latitude: operation.EnemyCoordinates.lat,
@@ -27,10 +25,10 @@ export class AppService {
       },
     });
   
-    // Initialize threatenedAircraftId as null
+    
     let threatenedAircraftId: number | null = null;
   
-    // Create threatened aircraft only if FriendlyAirCraft is present
+    
     if (operation.FriendlyAirCraft) {
       const threatenedAircraft = await this.prisma.threatenedAircraft.create({
         data: {
@@ -134,14 +132,13 @@ export class AppService {
           where: { id: operation.threatenedAircraftId },
         });
       }
-  
-      // Ensure the EnemyAircraft is not being referenced by any other Operations
+
       if (operation.enemyAircraftId) {
         const relatedOperations = await this.prisma.operation.findMany({
           where: { enemyAircraftId: operation.enemyAircraftId },
         });
   
-        if (relatedOperations.length === 1) { // Only the current operation is referencing this EnemyAircraft
+        if (relatedOperations.length === 1) { 
           await this.prisma.enemyAircraft.delete({
             where: { id: operation.enemyAircraftId }
           });
@@ -152,6 +149,12 @@ export class AppService {
       console.warn(`Operation with ID ${id} not found`);
     }
   }
+
+  async getlineCoordinates(coordinates:TargetCoordinateDto, endLat:number , endLng: number) {
+    
+    return calculateLine(coordinates, endLat, endLng)
+  }
+
 }
   
 
