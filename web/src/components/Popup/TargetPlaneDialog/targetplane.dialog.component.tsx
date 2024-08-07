@@ -8,13 +8,11 @@ type PlaneProps = {
   anchorEl: HTMLElement | null;
   open: boolean;
   handleClose: () => void;
-  isAirCraftAround: boolean;
   setRadius: Dispatch<React.SetStateAction<number>>;
   setOuterRadius: Dispatch<React.SetStateAction<number>>;
-  impactRadius: number
 };
 
-export const TargetPlaneDetails: React.FC<PlaneProps> = ({ anchorEl, open, handleClose, isAirCraftAround, setRadius, setOuterRadius, impactRadius}) => {
+export const TargetPlaneDetails: React.FC<PlaneProps> = ({ anchorEl, open, handleClose, setRadius, setOuterRadius}) => {
   const { coordinates } = useCoordinateContext();
 
   const handleImpactRadiusChange = (e: React.ChangeEvent<HTMLInputElement>) => {

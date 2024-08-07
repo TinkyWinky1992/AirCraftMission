@@ -34,7 +34,6 @@ export const Map: React.FC = () => {
 
   const [radius, setRadius] = useState<number>(500);
   const [outerRadius, setouterRadius] = useState<number>(1800);
-  const [isAirCraftAround, setIsAirCraftAround] = useState<boolean>(false);
   const [selectedPlane, setSelectedPlane] = useState<any | null>(null);
 
   const handleZoomChange = (newZoom: number) => {
@@ -69,9 +68,6 @@ export const Map: React.FC = () => {
         const resp = await fetchAirCraft();
         setAircraft(resp || []);
 
-        if (resp && resp.length > 0) {
-          setIsAirCraftAround(true);
-        }
       } catch (error) {
         console.error('Error fetching aircraft data:', error);
       }
@@ -153,10 +149,8 @@ export const Map: React.FC = () => {
           anchorEl={anchorEl}
           open={openTarget}
           handleClose={handleClose}
-          isAirCraftAround={isAirCraftAround}
           setRadius={setRadius}
           setOuterRadius={setouterRadius}
-          impactRadius={radius}
         />
 
         {coordinates && coordinates.lat !== null && coordinates.lng !== null && closestPlane && (
