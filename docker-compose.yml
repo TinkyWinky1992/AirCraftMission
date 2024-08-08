@@ -17,16 +17,13 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+    container_name: aircraftmission-backend
     ports:
       - "5000:5000"
     depends_on:
       - postgres
-    environment:
-      DATABASE_URL: "postgresql://yuval:admin@postgres:5432/AirTrackerDatabase"
-    volumes:
-      - ./backend:/app/server
     healthcheck:
-      test: ["CMD-SHELL", "curl --silent --fail http://localhost:5000/health || exit 1"]
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
       interval: 30s
       retries: 3
       start_period: 30s
