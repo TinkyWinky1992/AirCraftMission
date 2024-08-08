@@ -1,4 +1,4 @@
-import { Controller, Get, Query, Post, Body, Delete} from '@nestjs/common';
+import { Controller, Get, Query, Post, Body, Delete, BadRequestException, NotFoundException} from '@nestjs/common';
 import { TargetCoordinateDto, FriendlyAircraftDto, SaveOperationDto } from 'src/Dto';
 import { AppService } from 'src/service';
 
@@ -35,13 +35,19 @@ export class AppController {
   }
 
   @Get('nearbyplane')
-  getNearPlane(
-    @Query('aircraft')aircraft: FriendlyAircraftDto[], 
+  async getNearPlane(
+    @Query('aircraft') aircraft: FriendlyAircraftDto[], 
     @Query('coordinates') coordinates: TargetCoordinateDto, 
-    @Query('radius') radius: number): Promise<FriendlyAircraftDto>{
+    @Query('radius') radius: number
+  ): Promise<FriendlyAircraftDto | null> {
 
-    return this.appService.ClosestPlane(aircraft, coordinates, radius)
+  
+    const closestPlane = await this.appService.ClosestPlane(aircraft, coordinates, radius);
+
+  
+    return closestPlane;
   }
+  
 
   @Post('SaveOperation')
   SaveOperation(@Body() saveOperationDto: any) {

@@ -13,6 +13,7 @@ type Aircraft = {
 
   export const fetchAirCraft = async (): Promise<Aircraft[]> => {
     try {
+
       const response = await axios.get('https://flight-radar1.p.rapidapi.com/flights/list-in-boundary', {
         params: {
           bl_lat: 29.5,  // Bottom-left latitude
@@ -26,20 +27,20 @@ type Aircraft = {
           'x-rapidapi-key': '5345082c84msh650de8667ef66b8p16ea8cjsn2fc7e52667ac'
         }
       });
-      
-      // Adjust the response parsing based on the actual structure
-      return response.data.aircraft.map((state: any) => ({
+  
+      // Transform the response data to match the Aircraft type
+      const aircraftData: Aircraft[] = response.data.aircraft.map((state: any) => ({
         icao24: state[0],
         callsign: state[1],
         latitude: state[2],
         longitude: state[3],
         velocity: state[4],
-        altitude: state[5]
       }));
-
+      
+      return aircraftData;
     } catch (error) {
       console.error('Error fetching aircraft data:', error);
-      return [];
+      throw new Error('Failed to fetch aircraft data');
     }
     
   }
@@ -48,8 +49,10 @@ type Aircraft = {
 
 
   
-  /* 
-      const aircraftData: Aircraft[] = [
+  /*
+
+  
+        const aircraftData: Aircraft[] = [
         { icao24: '367c8c6c', callsign: '896604', latitude: 30.337, longitude: 39.835, velocity: 114 },
         { icao24: '367ca1d0', callsign: '742838', latitude: 30.015, longitude: 35.327, velocity: 194 },
         { icao24: '367ca3f8', callsign: '738444', latitude: 33.43, longitude: 34.343, velocity: 354 },
@@ -68,7 +71,35 @@ type Aircraft = {
         { icao24: '367c9ee1', callsign: '738289', latitude: 32, longitude: 34.877, velocity: 120 }
       ];
       // Return the hardcoded data
+      console.log(aircraftData)
       return aircraftData;
+
+
+    const response = await axios.get('https://flight-radar1.p.rapidapi.com/flights/list-in-boundary', {
+        params: {
+          bl_lat: 29.5,  // Bottom-left latitude
+          bl_lng: 34.0,  // Bottom-left longitude
+          tr_lat: 33.5,  // Top-right latitude
+          tr_lng: 40.5,  // Top-right longitude
+          limit: 200     // Number of results to return
+        },
+        headers: {
+          'x-rapidapi-host': 'flight-radar1.p.rapidapi.com',
+          'x-rapidapi-key': '5345082c84msh650de8667ef66b8p16ea8cjsn2fc7e52667ac'
+        }
+      });
+    
+      // Adjust the response parsing based on the actual structure
+      return response.data.aircraft.map((state: any) => ({
+        icao24: state[0],
+        callsign: state[1],
+        latitude: state[2],
+        longitude: state[3],
+        velocity: state[4],
+        altitude: state[5]
+      }));
+
+
 
 
 

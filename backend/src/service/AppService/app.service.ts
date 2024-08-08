@@ -92,13 +92,15 @@ export class AppService {
   }
 
   async ClosestPlane(aircraft: FriendlyAircraftDto[], coordinates: TargetCoordinateDto, radius: number): Promise<FriendlyAircraftDto> {
+
+    const aircraftArray: FriendlyAircraftDto[] = Object.values(aircraft);
     const { lat: fireLat, lng: fireLng } = coordinates;
   
     if (!fireLat || !fireLng) {
       return null;
     }
   
-    const withinRadius = aircraft.filter(plane => {
+    const withinRadius = aircraftArray.filter(plane => {
       const distance = calculateDistance(fireLat, fireLng, plane.latitude, plane.longitude);
       return distance <= radius;
     });

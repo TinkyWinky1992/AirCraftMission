@@ -29,7 +29,7 @@ export const DrawerNavigation: React.FC<{ open: boolean }> = ({ open }) => {
             
                 setData(resp);
                 setSelectedOperation(false)
-            }catch(error){
+            }catch(error) {
                 console.log(error)
             }
 
@@ -69,7 +69,6 @@ export const DrawerNavigation: React.FC<{ open: boolean }> = ({ open }) => {
     };
 
     const clickhandleOperation = async (operationId: number) => {
-        console.log(`Marked operation with ID: ${operationId}`);
         try{
             await DeleteAllOperation(operationId);
             setSelectedOperation(true)

@@ -28,8 +28,9 @@ export const DialogSaveOperation: React.FC<DialogState> = ({ open, setOpen }) =>
             }catch(error){
                 console.log(error)
             }
-          
-          
+
+
+
         } else {
           console.error('Enemy details are required');
         }

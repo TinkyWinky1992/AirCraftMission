@@ -67,6 +67,7 @@ export const Map: React.FC = () => {
       try {
         const resp = await fetchAirCraft();
         setAircraft(resp || []);
+        console.log(aircraft)
 
       } catch (error) {
         console.error('Error fetching aircraft data:', error);
@@ -97,15 +98,16 @@ export const Map: React.FC = () => {
 
   useEffect(() => {
     const fetchTimer = async () => {
-      try{
-        if (closestPlane && coordinates) {
+      if (closestPlane && coordinates) {
+        try{
           const timeRemaining = await getTimer(closestPlane.latitude, closestPlane.longitude, coordinates);
           setTimer(timeRemaining);
-        }
-      }catch(error){
-        console.log(error)
-      }
 
+        }catch(error){
+          console.log(error)
+        }
+
+      }
     };
 
     fetchTimer();
