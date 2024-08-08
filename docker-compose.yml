@@ -1,15 +1,15 @@
 services:
   postgres:
-      image: postgres:15
-      restart: always
-      environment:
-        POSTGRES_PASSWORD: "admin"
-        POSTGRES_USER: "yuval"
-        POSTGRES_DB: AirTrackerDatabase
-      ports:
-        - "5432:5432"
-      volumes:
-        - postgres_data:/var/lib/postgresql/data
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: "admin"
+      POSTGRES_USER: "yuval"
+      POSTGRES_DB: AirTrackerDatabase
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
 
   backend:
     build:
@@ -19,8 +19,11 @@ services:
       - "5000:5000"
     depends_on:
       - postgres
+    environment:
+      DATABASE_URL: "postgresql://yuval:admin@postgres:5432/AirTrackerDatabase"
     volumes:
       - ./backend:/app/server
+
 
   web:
     build:
