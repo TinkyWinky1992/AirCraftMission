@@ -24,10 +24,15 @@ export const DrawerNavigation: React.FC<{ open: boolean }> = ({ open }) => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const resp = await getAllOperations();
+            try{
+                const resp = await getAllOperations();
             
-            setData(resp);
-            setSelectedOperation(false)
+                setData(resp);
+                setSelectedOperation(false)
+            }catch(error) {
+                console.log(error)
+            }
+
         };
         fetchData();
     }, [open,selectedOperation]);
@@ -64,10 +69,13 @@ export const DrawerNavigation: React.FC<{ open: boolean }> = ({ open }) => {
     };
 
     const clickhandleOperation = async (operationId: number) => {
-        console.log(`Marked operation with ID: ${operationId}`);
-        
-        await DeleteAllOperation(operationId);
-        setSelectedOperation(true)
+        try{
+            await DeleteAllOperation(operationId);
+            setSelectedOperation(true)
+        }catch(error){
+            console.log(error)
+        }
+
         
     };
     const handleChangeOperation  = (operationId: number) => {

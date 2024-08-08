@@ -23,6 +23,7 @@ export const getTimer = async (lat: number, lng: number, coordinate: Coordinates
 
 export const getNearPlane = async(aircraft: FreindlyAircraft[], coordinate: Coordinates, radius: number) => {
   try {
+    
     const response = await axios.get('http://localhost:5000/nearbyplane', {
       params: {
         aircraft: aircraft,

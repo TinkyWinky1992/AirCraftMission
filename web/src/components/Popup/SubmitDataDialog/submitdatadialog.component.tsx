@@ -22,8 +22,13 @@ export const DialogSaveOperation: React.FC<DialogState> = ({ open, setOpen }) =>
     
 
         if (enemyDetails) {
-          await postOperation(friendlyAircraftArray, enemyDetails, value?.toDate() ?? new Date());
-          setOpen(false);
+            try{
+                await postOperation(friendlyAircraftArray, enemyDetails, value?.toDate() ?? new Date());
+                setOpen(false);
+            }catch(error){
+                console.log(error)
+            }
+
         } else {
           console.error('Enemy details are required');
         }
