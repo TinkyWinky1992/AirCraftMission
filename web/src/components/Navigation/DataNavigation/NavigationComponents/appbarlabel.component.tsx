@@ -5,14 +5,12 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import Box from '@mui/material/Box';
+
 export const AppBarLabel: React.FC<{ label: string, setOpen: Dispatch<SetStateAction<boolean>>}> = ({ label, setOpen}) => {
-
-
 
     const toggleDrawerMenu = (newOpen: boolean) => () => {
         setOpen(newOpen);
     };
-
     
     return (
         <AppBar position="static">
