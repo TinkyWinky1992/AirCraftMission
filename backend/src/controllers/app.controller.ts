@@ -6,6 +6,14 @@ import { AppService } from 'src/service';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
+
+
+  @Get('/health')
+  healthCheck(): string {
+    return 'Backend is up and running';
+  }
+
+  
   @Get('getLine')
   async getLine(
     @Query('coordinate') coordinate:any, 

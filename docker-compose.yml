@@ -1,3 +1,5 @@
+version: '3.8'  # Specify your version
+
 services:
   postgres:
     image: postgres:15
@@ -23,7 +25,12 @@ services:
       DATABASE_URL: "postgresql://yuval:admin@postgres:5432/AirTrackerDatabase"
     volumes:
       - ./backend:/app/server
-
+    healthcheck:
+      test: ["CMD-SHELL", "curl --silent --fail http://localhost:5000/health || exit 1"]
+      interval: 30s
+      retries: 3
+      start_period: 30s
+      timeout: 10s
 
   web:
     build:
@@ -32,8 +39,8 @@ services:
     ports:
       - "5173:5173"
     depends_on:
-      - backend
-      - postgres
+      backend:
+        condition: service_healthy
     volumes:
       - ./web:/web
 
