@@ -1,17 +1,38 @@
-version: '3.8'  # Specify the Docker Compose version
-
 services:
   postgres:
-    image: postgres:15
-    restart: always
-    environment:
-      POSTGRES_PASSWORD: "admin"
-      POSTGRES_USER: "yuval"
-      POSTGRES_DB: AirTrackerDatabase
+      image: postgres:15
+      restart: always
+      environment:
+        POSTGRES_PASSWORD: "admin"
+        POSTGRES_USER: "yuval"
+        POSTGRES_DB: AirTrackerDatabase
+      ports:
+        - "5432:5432"
+      volumes:
+        - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     ports:
-      - "5432:5432"
+      - "5000:5000"
+    depends_on:
+      - postgres
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - ./backend:/app/server
+
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+      - postgres
+    volumes:
+      - ./web:/web
 
 volumes:
   postgres_data:

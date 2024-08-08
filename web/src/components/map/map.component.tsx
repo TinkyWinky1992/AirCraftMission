@@ -97,10 +97,15 @@ export const Map: React.FC = () => {
 
   useEffect(() => {
     const fetchTimer = async () => {
-      if (closestPlane && coordinates) {
-        const timeRemaining = await getTimer(closestPlane.latitude, closestPlane.longitude, coordinates);
-        setTimer(timeRemaining);
+      try{
+        if (closestPlane && coordinates) {
+          const timeRemaining = await getTimer(closestPlane.latitude, closestPlane.longitude, coordinates);
+          setTimer(timeRemaining);
+        }
+      }catch(error){
+        console.log(error)
       }
+
     };
 
     fetchTimer();
